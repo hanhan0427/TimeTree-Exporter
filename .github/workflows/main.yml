@@ -30,7 +30,7 @@ jobs:
 
 
       - name: Run TimeTree Exporter (with Expect)
-        run: |
+         run: |
           expect << EOF
           set timeout -1
           spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o calendar.ics
