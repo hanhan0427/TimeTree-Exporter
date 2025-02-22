@@ -1,0 +1,42 @@
+name: Export TimeTree Calendar
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天執行
+  workflow_dispatch:      # 允許手動觸發
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          
+      - name: Export Calendar
+        env:
+          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
+          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
+        run: |
+          expect -c '
+          spawn python -m timetree_exporter -e "$env(TIMETREE_EMAIL)" -o calendar.ics
+          expect "password:"
+          send "$env(TIMETREE_PASSWORD)\r"
+          expect "export?"
+          send "1\r"
+          interact
+          '
+          
+      - name: Upload calendar file
+        uses: actions/upload-artifact@v3
+        with:
+          name: calendar
+          path: calendar.ics
