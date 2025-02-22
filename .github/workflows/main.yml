@@ -42,8 +42,8 @@ jobs:
           EOF
        
 
-          - name: Copy to Samba Share
-          run: |
+      - name: Copy to Samba Share
+        run: |
           mkdir -p /mnt/ha_calendar
           sudo mount -t cifs "${{ secrets.SAMBA_SHARE }}" /mnt/ha_calendar \
             -o username="${{ secrets.SAMBA_USERNAME }}",password="${{ secrets.SAMBA_PASSWORD }}",vers=3.0
