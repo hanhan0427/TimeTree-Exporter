@@ -8,6 +8,10 @@ on:
 jobs:
   export:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 重要，寫入權限
+      pages: write #寫入 pages
+      id-token: write # 權限
 
     steps:
       - name: Checkout code
@@ -42,4 +46,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: timetree-calendar
-          path: calendar.ics
+          path: timetree.ics
+
+      - name: Deploy to GitHub Pages # 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
