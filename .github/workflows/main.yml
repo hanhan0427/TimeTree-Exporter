@@ -1,9 +1,9 @@
 name: TimeTree Export
 
 on:
-  workflow_dispatch:  # 允許手動觸發
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # 每天 00:00 (UTC 時間) 執行
+    - cron: '0 0 * * *'
 
 jobs:
   export:
@@ -20,23 +20,22 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get install -y expect
           pip install -r requirements.txt
           pip install selenium==4.17.2
 
-      - name: Download latest chromedriver
+      - name: Download latest chromedriver #下載最新
         run: |
           LATEST_CHROMEDRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
           wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip
           unzip /tmp/chromedriver.zip -d /usr/local/bin/
 
-      - name: Run TimeTree Exporter
+      - name: Run TimeTree Exporter (with Expect)
         run: |
-          python -m timetree_exporter \
-            -e ${{ secrets.TIMETREE_EMAIL }} \
-            -p ${{ secrets.TIMETREE_PASSWORD }} \
-            -o calendar.ics
-        env:
-            CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}  # CALENDAR_ID 使用 env 方式
+          export CALENDAR_ID=${{ secrets.TIMETREE_CALENDAR_ID }} #在這邊設定好
+          cat << EOF | python -m timetree_exporter -e ${{ secrets.TIMETREE_EMAIL }} -o calendar.ics
+          ${{ secrets.TIMETREE_PASSWORD }}
+          EOF
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
