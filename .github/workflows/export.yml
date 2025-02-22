@@ -27,14 +27,14 @@ jobs:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
         run: |
-          expect -c '
-          spawn python -m timetree_exporter -e "$env(TIMETREE_EMAIL)" -o calendar.ics
+          expect << EOF
+          spawn python -m timetree_exporter -e ${TIMETREE_EMAIL} -o calendar.ics
           expect "password:"
-          send "$env(TIMETREE_PASSWORD)\r"
+          send "${TIMETREE_PASSWORD}\r"
           expect "export?"
           send "1\r"
-          interact
-          '
+          expect eof
+          EOF
           
       - name: Upload calendar file
         uses: actions/upload-artifact@v4
