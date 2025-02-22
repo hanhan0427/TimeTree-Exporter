@@ -45,7 +45,7 @@ jobs:
       - name: Copy to Samba Share
         run: |
           mkdir -p ./ha_calendar
-          sudo mount -t cifs "${{ secrets.SAMBA_SHARE }}" /ha_calendar \
+          sudo mount -t cifs "${{ secrets.SAMBA_SHARE }}" ./ha_calendar \
             -o username="${{ secrets.SAMBA_USERNAME }}",password="${{ secrets.SAMBA_PASSWORD }}",vers=3.0
-          cp calendar.ics /ha_calendar/
-          sudo umount /ha_calendar
+          cp calendar.ics ./ha_calendar/
+          sudo umount ./ha_calendar
