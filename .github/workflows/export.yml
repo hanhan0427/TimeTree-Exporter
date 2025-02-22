@@ -25,7 +25,7 @@ jobs:
           EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
-        run: python __main__.py
+        run: python main.py
         
       - name: Commit and Push
         run: |
