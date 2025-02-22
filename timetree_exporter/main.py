@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import json
 import os
 import sys
@@ -8,7 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from icalendar import Calendar
 from timetree_exporter import TimeTreeEvent, ICalEventFormatter, __version__
-from timetree_exporter.api import get_api_token, get_upcoming_events
+from api.auth import get_api_token
+from api.calendar import get_upcoming_events
 
 def main():
     # Get login credentials from environment variables
