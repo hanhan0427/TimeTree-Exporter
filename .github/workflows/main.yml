@@ -23,6 +23,11 @@ jobs:
           pip install -r requirements.txt
           pip install selenium==4.17.2
 
+      - name: Download latest chromedriver
+        run: |
+          LATEST_CHROMEDRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
+          wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip
+          unzip /tmp/chromedriver.zip -d /usr/local/bin/
 
       - name: Run TimeTree Exporter
         run: |
