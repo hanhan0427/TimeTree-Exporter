@@ -20,23 +20,30 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get install -y expect
           pip install -r requirements.txt
-          pip install selenium==4.17.2
+          # 移除這行： pip install selenium==4.17.2  # 不再需要 Selenium
 
-      - name: Download latest chromedriver
-        run: |
-          LATEST_CHROMEDRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
-          wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip
-          unzip /tmp/chromedriver.zip -d /usr/local/bin/
+      # 移除整個 ChromeDriver 下載步驟：
+      # - name: Download latest chromedriver
+      #   run: |
+      #     LATEST_CHROMEDRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
+      #     wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip
+      #     unzip /tmp/chromedriver.zip -d /usr/local/bin/
 
-      - name: Run TimeTree Exporter
+      - name: Run TimeTree Exporter (with Expect)
         run: |
-          python -m timetree_exporter \
-            -e ${{ secrets.TIMETREE_EMAIL }} \
-            -o calendar.ics
+          expect << EOF
+          set timeout -1
+          spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o calendar.ics
+          expect "Enter your password:"
+          send "${{ secrets.TIMETREE_PASSWORD }}\r"
+          expect "Which Calendar do you want to export? (Default to 1):"
+          send "${{ secrets.TIMETREE_CALENDAR_ID }}\r"
+          expect eof
+          EOF
         env:
-          CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }} # 移到 env
+           CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
