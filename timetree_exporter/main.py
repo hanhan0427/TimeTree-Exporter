@@ -7,8 +7,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from icalendar import Calendar
 from timetree_exporter import TimeTreeEvent, ICalEventFormatter, __version__
-from api.auth import get_token
-from api.calendar import get_upcoming_events
+from api.auth import TimeTreeAuth
+from api.calendar import TimeTreeCalendar
+
 
 def main():
     # Get login credentials from environment variables
