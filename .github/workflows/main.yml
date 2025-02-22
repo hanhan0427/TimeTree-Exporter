@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y expect smbclient cifs-utils
+          sudo apt-get update && sudo apt-get install -y expect curl
           python -m pip install --upgrade pip
           pip install -e .
 
@@ -42,10 +42,11 @@ jobs:
           EOF
        
 
-      - name: Copy to Samba Share
+      - name: Update Home Assistant Calendar (via API)
         run: |
-          mkdir -p ./ha_calendar
-          sudo mount -t cifs "//${{ secrets.SAMBA_SHARE }}" ./ha_calendar \
-            -o username="${{ secrets.SAMBA_USERNAME }}",password="${{ secrets.SAMBA_PASSWORD }}",vers=3.0
-          cp calendar.ics ./ha_calendar/
-          sudo umount ./ha_calendar
+          curl -X POST -H "Authorization: Bearer ${{ secrets.HA_LONG_LIVED_TOKEN }}" \
+               -H "Content-Type: text/calendar" \
+               -d @calendar.ics \
+               "${{ secrets.HA_EXTERNAL_URL }}/api/calendars/calendar.ics"  # 修改這裡
+        env:
+            HA_EXTERNAL_URL: ${{ secrets.HA_EXTERNAL_URL }}
