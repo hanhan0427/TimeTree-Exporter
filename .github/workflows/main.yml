@@ -22,7 +22,7 @@ jobs:
         run: |
           sudo apt-get install -y expect
           pip install -r requirements.txt
-          # 移除這行： pip install selenium==4.17.2  # 不再需要 Selenium
+          
 
       # 移除整個 ChromeDriver 下載步驟：
       # - name: Download latest chromedriver
@@ -39,11 +39,10 @@ jobs:
           expect "Enter your password:"
           send "${{ secrets.TIMETREE_PASSWORD }}\r"
           expect "Which Calendar do you want to export? (Default to 1):"
-          send "${{ secrets.TIMETREE_CALENDAR_ID }}\r"
+          send "4\r"
           expect eof
           EOF
-        env:
-           CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
+       
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
