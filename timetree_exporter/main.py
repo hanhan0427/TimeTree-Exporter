@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from icalendar import Calendar
 from timetree_exporter import TimeTreeEvent, ICalEventFormatter, __version__
-from api.auth import get_api_token
+from api.auth import get_token
 from api.calendar import get_upcoming_events
 
 def main():
@@ -19,7 +19,7 @@ def main():
     # Sign in to TimeTree
     print("Signing in to TimeTree...")
     try:
-        api_access_token = get_api_token(email, password)
+        api_access_token = get_token(email, password)
         print("Successfully signed in!")
     except Exception as e:
         print(f"Failed to sign in: {e}")
