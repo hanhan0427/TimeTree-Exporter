@@ -18,16 +18,10 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        working-directory: ./timetree_exporter
         run: |
           python -m pip install --upgrade pip
           pip install icalendar
-          echo "Installed packages:"
-          pip list
-          echo "Python path:"
-          python -c "import sys; print(sys.path)"
-          echo "Working directory:"
-          pwd
+          pip install -e .
 
       - name: Run script
         working-directory: ./timetree_exporter
@@ -36,7 +30,6 @@ jobs:
           PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
         run: |
-          python -c "import icalendar; print('icalendar imported successfully')"
           python main.py
 
       - name: Commit files
