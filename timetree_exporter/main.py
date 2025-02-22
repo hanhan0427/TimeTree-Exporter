@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from icalendar import Calendar
 from timetree_exporter import TimeTreeEvent, ICalEventFormatter, __version__
-from timetree_exporter.api.auth import TimeTreeAuth
-from timetree_exporter.api.calendar import TimeTreeCalendar
+from timetree_exporter.api.auth import Auth
+from timetree_exporter.api.calendar import Calendar
 
 
 def main():
