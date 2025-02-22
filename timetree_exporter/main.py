@@ -53,7 +53,7 @@ def get_events(email: str, password: str):
 
 
 def main():
-        email = os.environ['EMAIL']
+    email = os.environ['EMAIL']
     password = os.environ['PASSWORD']
     calendar_id = os.environ['CALENDAR_ID']
     """Main function for the Timetree Exporter."""
