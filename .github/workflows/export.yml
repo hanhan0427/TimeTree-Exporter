@@ -12,31 +12,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Debug Directory
+        run: |
+          pwd
+          ls -la
+          ls -la timetree_exporter/
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
       - name: Install dependencies
+        working-directory: ./timetree_exporter
         run: |
-          cd timetree_exporter
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run script
+        working-directory: ./timetree_exporter
         env:
           EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
           CALENDAR_ID: ${{ secrets.TIMETREE_CALENDAR_ID }}
         run: |
-          cd timetree_exporter
           python main.py
 
       - name: Commit files
         run: |
-          cd timetree_exporter
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add calendar.ics
+          git add .
           git commit -m "Update calendar" || echo "No changes to commit"
           git push
