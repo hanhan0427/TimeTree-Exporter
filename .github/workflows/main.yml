@@ -32,7 +32,7 @@ jobs:
           expect "Enter your password:"
           send "${{ secrets.TIMETREE_PASSWORD }}\r"
           expect "Which Calendar do you want to export? (Default to 1):"
-          send "1\r"  # 根據你要匯出的行事曆修改這裡！！！
+          send "4\r" 
           expect eof
           EOF
         env:
