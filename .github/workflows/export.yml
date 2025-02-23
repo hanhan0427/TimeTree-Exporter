@@ -2,7 +2,7 @@ name: Export TimeTree Calendar
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天執行
+    - cron: '0 */6 * * *'  # 每天執行
   workflow_dispatch:      # 允許手動觸發
 
 jobs:
