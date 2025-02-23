@@ -33,7 +33,7 @@ jobs:
           expect "password:"
           send "$password\r"
           expect "export?"
-          send "1\r"
+          send "4\r"
           expect eof
           EOF
           chmod +x export.exp
