@@ -1,17 +1,13 @@
-name: TimeTree Export
+name: TimeTree to ICS
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允許手動觸發
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *' # 每天午夜執行 (UTC 時間)
 
 jobs:
   export:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # 重要，寫入權限
-      pages: write #寫入 pages
-      id-token: write # 權限
 
     steps:
       - name: Checkout code
@@ -24,29 +20,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y expect curl
-          python -m pip install --upgrade pip
-          pip install -e .
-
+          sudo apt-get update && sudo apt-get install -y expect # 安裝 expect
+          pip install -r requirements.txt
 
       - name: Run TimeTree Exporter (with Expect)
         run: |
           expect << EOF
           set timeout -1
-          spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o calendar.ics
+          spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o /mnt/hass-config/www/timetree/calendar.ics
           expect "Enter your password:"
           send "${{ secrets.TIMETREE_PASSWORD }}\r"
           expect "Which Calendar do you want to export? (Default to 1):"
-          send "4\r"
+          send "4\r"  # 根據你要匯出的行事曆修改這裡！！！
           expect eof
           EOF
-       
-
-      - name: Update Home Assistant Calendar (via API)
-        run: |
-          curl -X POST -H "Authorization: Bearer ${{ secrets.HA_LONG_LIVED_TOKEN }}" \
-               -H "Content-Type: text/calendar" \
-               -d @calendar.ics \
-               "${{ secrets.HA_EXTERNAL_URL }}/api/calendars/calendar.ics"  # 修改這裡
         env:
-            HA_EXTERNAL_URL: ${{ secrets.HA_EXTERNAL_URL }}
+          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
