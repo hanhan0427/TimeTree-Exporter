@@ -28,7 +28,7 @@ jobs:
         run: |
           expect << EOF
           set timeout -1
-          spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o /mnt/hass-config/www/timetree/calendar.ics
+          spawn python -m timetree_exporter -e "${{ secrets.TIMETREE_EMAIL }}" -o /mnt/hass-config/www/calendar.ics
           expect "Enter your password:"
           send "${{ secrets.TIMETREE_PASSWORD }}\r"
           expect "Which Calendar do you want to export? (Default to 1):"
