@@ -31,8 +31,10 @@ jobs:
           expect "Enter your password:"
           send "${{ secrets.TIMETREE_PASSWORD }}\r"
           expect "Which Calendar do you want to export? (Default to 1):"
-          send "4\r"  # 根據你要匯出的行事曆修改這裡！！！
-          expect eof
+          send "4\r"
+          expect "*"  # 捕獲任何輸出
+          send "\r"   # 模擬按下 Enter 鍵 (有時需要)
+          expect eof  # 通常放在最後
           EOF
         env:
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
