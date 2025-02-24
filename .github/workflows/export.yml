@@ -50,3 +50,4 @@ jobs:
         with:
           name: calendar
           path: calendar.ics
+          retention-days: 1
