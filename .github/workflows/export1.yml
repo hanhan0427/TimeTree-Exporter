@@ -1,0 +1,45 @@
+name: Export TimeTree Calendar
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 執行 (台灣時間 08:00)
+  workflow_dispatch: # 允許手動觸發 workflow
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install icalendar google-api-python-client google-auth-httplib2 google-auth-oauthlib requests PyGithub
+
+      - name: Export TimeTree Calendar
+        run: |
+          # 執行你的 TimeTree 匯出腳本或程式碼
+          # 這裡假設你的匯出腳本會產生 calendar.ics 檔案
+          echo "執行 TimeTree 匯出腳本..."
+          ./timetree_to_ics.sh  # 替換成你實際的 TimeTree 匯出命令
+
+      - name: Upload Calendar as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: calendar.ics  # Artifact 名稱
+          path: calendar.ics  # 上傳的檔案路徑
+
+      - name: Import ICS to Google Calendar
+        run: |
+          # 執行 Python 腳本，將 ICS 檔案導入 Google Calendar
+          python export.py  # 執行你的 export.py 腳本
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # 使用 GitHub Secrets
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用 GitHub Secrets
+          GITHUB_REPOSITORY: ${{ github.repository }}
