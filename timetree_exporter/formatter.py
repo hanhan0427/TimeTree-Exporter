@@ -101,19 +101,19 @@ class ICalEventFormatter:
             time = self.time_tree_event.end_at
             timezone = self.time_tree_event.end_timezone
 
-        if self.time_tree_event.all_day:
-            return vDate(
-                convert_timestamp_to_datetime(
-                    time / 1000,
-                    ZoneInfo(timezone),
-                )
-            )
-        return vDatetime(
-            convert_timestamp_to_datetime(
+        dt = convert_timestamp_to_datetime(
                 time / 1000,
                 ZoneInfo(timezone),
             )
-        )
+
+        if self.time_tree_event.all_day and not is_start_time:
+            dt += timedelta(days=1)
+
+        if self.time_tree_event.all_day:
+            return vDate(dt)
+           
+        return vDatetime(dt)
+
 
     @property
     def dtstart(self):
